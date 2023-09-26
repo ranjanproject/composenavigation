@@ -91,11 +91,17 @@ fun CupcakeApp(
         NavHost(navController = navController,
             startDestination = CupcakeScreen.Start.name,
             modifier = Modifier.padding(innerPadding)){
+
+            //<editor-fold desc="NAV GRAPH">
             //this part is nav graph
             composable(route = CupcakeScreen.Start.name){
                 StartOrderScreen(quantityOptions = DataSource.quantityOptions,
-                    { onQuantitySelected(it, viewModel, navController) })
+                    {
+                        //function for handling data update and navigation to different view
+                        onQuantitySelected(it, viewModel, navController)
+                    })
             }
+
             
             composable(route = CupcakeScreen.Flavor.name){
                 val context = LocalContext.current
@@ -113,6 +119,7 @@ fun CupcakeApp(
             composable(route = CupcakeScreen.Summary.name){
                 OrderSummaryScreen(orderUiState = uiState)
             }
+            //</editor-fold>
         }
     }
 }
@@ -122,6 +129,12 @@ private fun onQuantitySelected(quantity: Int,
                                navController: NavHostController ){
 
     viewModel.setQuantity(quantity)
+
+    /**
+     *  controls the forward navigation --> route is basically destination
+     *  the destination name is already setup during navigation graph creation
+     */
+
     navController.navigate(route = CupcakeScreen.Flavor.name)
 
 }
