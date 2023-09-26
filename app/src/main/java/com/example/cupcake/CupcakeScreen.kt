@@ -107,13 +107,18 @@ fun CupcakeApp(
                 val context = LocalContext.current
                 SelectOptionScreen(subtotal = uiState.price,
                     options = DataSource.flavors.map { context.resources.getString(it)},
-                    onSelectionChanged = {viewModel.setFlavor(it)})
+                    onSelectionChanged = {viewModel.setFlavor(it)},
+                    onNextButtonClicked = {onNextClicked(navController, CupcakeScreen.Pickup.name)},
+                    onCancelButtonClicked = {onCancelClicked(navController)}
+                )
             }
 
             composable(route = CupcakeScreen.Pickup.name){
                 SelectOptionScreen(subtotal = uiState.price,
                     options = uiState.pickupOptions,
-                    onSelectionChanged = {viewModel.setDate(it)})
+                    onSelectionChanged = {viewModel.setDate(it)},
+                    onNextButtonClicked = { onNextClicked(navController, CupcakeScreen.Summary.name) },
+                    onCancelButtonClicked = { onCancelClicked(navController) })
             }
 
             composable(route = CupcakeScreen.Summary.name){
@@ -135,8 +140,15 @@ private fun onQuantitySelected(quantity: Int,
      *  the destination name is already setup during navigation graph creation
      */
 
-    navController.navigate(route = CupcakeScreen.Flavor.name)
+    onNextClicked(navController, CupcakeScreen.Flavor.name)
+}
 
+private fun onCancelClicked(navController: NavHostController){
+    navController.navigateUp()
+}
+
+private fun onNextClicked(navController: NavHostController, routeName: String){
+    navController.navigate(route = routeName)
 }
 
 @Composable
