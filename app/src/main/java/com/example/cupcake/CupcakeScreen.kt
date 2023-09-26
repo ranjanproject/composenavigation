@@ -109,7 +109,7 @@ fun CupcakeApp(
                     options = DataSource.flavors.map { context.resources.getString(it)},
                     onSelectionChanged = {viewModel.setFlavor(it)},
                     onNextButtonClicked = {onNextClicked(navController, CupcakeScreen.Pickup.name)},
-                    onCancelButtonClicked = {onCancelClicked(navController)}
+                    onCancelButtonClicked = {onCancelClicked(viewModel,navController)}
                 )
             }
 
@@ -118,7 +118,7 @@ fun CupcakeApp(
                     options = uiState.pickupOptions,
                     onSelectionChanged = {viewModel.setDate(it)},
                     onNextButtonClicked = { onNextClicked(navController, CupcakeScreen.Summary.name) },
-                    onCancelButtonClicked = { onCancelClicked(navController) })
+                    onCancelButtonClicked = { onCancelClicked(viewModel,navController) })
             }
 
             composable(route = CupcakeScreen.Summary.name){
@@ -143,8 +143,22 @@ private fun onQuantitySelected(quantity: Int,
     onNextClicked(navController, CupcakeScreen.Flavor.name)
 }
 
-private fun onCancelClicked(navController: NavHostController){
-    navController.navigateUp()
+private fun onCancelClicked(viewModel: OrderViewModel,navController: NavHostController){
+    /**
+     * navigateUp is useful when you want to go in backstack
+     */
+//    navController.navigateUp()
+
+    /**
+     * if we want to restart the order from beginning then
+     * we should use popBackStack(@route, @inclusive)
+     * @route is the destination -> above this destination all the screen will be removed
+     * if @inclusive is true then it will remove all the screens above destination
+     * including destination screen from the stack
+     */
+
+    viewModel.resetOrder()
+    navController.popBackStack(route = CupcakeScreen.Start.name, inclusive = false)
 }
 
 private fun onNextClicked(navController: NavHostController, routeName: String){
